@@ -25,6 +25,7 @@ export class ProgramsController {
 
   @Post()
   create(@Body() payload: CreateProgramDto) {
+    console.log(payload);
     return this.programsService.create(payload);
   }
 }

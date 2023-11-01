@@ -1,5 +1,6 @@
 export class Program {
   id: number;
   name: string;
-  date: string;
+  date?: Date;
+  address_url?: string;
 }

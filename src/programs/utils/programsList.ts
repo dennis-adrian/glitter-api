@@ -6,12 +6,10 @@ export class ProgramsList {
     {
       id: this._counterId++,
       name: 'Glitter Version 1',
-      date: Date(),
     },
     {
       id: this._counterId++,
       name: 'Feria de Halloween',
-      date: Date(),
     },
   ];
 
