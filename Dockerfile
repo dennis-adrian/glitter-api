@@ -1,3 +1,6 @@
+# docker build -t registry.gitlab.com/garabatosdepandora/glitter-api .
+# docker push registry.gitlab.com/garabatosdepandora/glitter/glitter-api
+
 FROM node:20
 
 # working directory
