@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { User, Prisma } from '@prisma/client';
 
@@ -7,10 +11,15 @@ export class UsersService {
   constructor(private prisma: DatabaseService) {}
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    console.log(data);
-    return this.prisma.user.create({
-      data,
-    });
+    try {
+      const user = await this.prisma.user.create({
+        data,
+      });
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async findAll(): Promise<User[]> {
@@ -20,9 +29,15 @@ export class UsersService {
   async findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
+    const user = await this.prisma.user.findUnique({
+      where: {
+        firebaseId: userWhereUniqueInput.firebaseId,
+      },
     });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
   }
 
   async update(params: {

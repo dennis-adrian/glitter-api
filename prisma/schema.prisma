@@ -9,15 +9,18 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-  name String
+  firstName String @map("first_name")
   lastName String? @map("last_name")
-  username String? @unique
+  displayName String? @map("display_name")
   email String @unique
   country String?
   city String?
   phone String?
   isAdmin Boolean @default(false) @map("is_admin")
   isArtist Boolean @default(false) @map("is_artist")
+  firebaseId String? @unique @map("firebase_id")
+  photoURL String? @map("photo_url")
+  isCustomPhoto Boolean @default(false) @map("is_custom_photo")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
