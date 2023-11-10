@@ -1,10 +1,10 @@
 # docker build -t registry.gitlab.com/garabatosdepandora/glitter-api .
 # docker push registry.gitlab.com/garabatosdepandora/glitter/glitter-api
 
-FROM node:20
+FROM node:20 AS builder
 
 # working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # copy package.json and package-lock.json
 COPY package*.json ./
@@ -17,6 +17,12 @@ COPY . .
 
 # create production build
 RUN npm run build
+
+FROM node:20
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
