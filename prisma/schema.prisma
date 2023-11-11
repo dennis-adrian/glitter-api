@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-  firstName String @map("first_name")
+  firstName String? @map("first_name")
   lastName String? @map("last_name")
   displayName String? @map("display_name")
   email String @unique
@@ -21,6 +21,8 @@ model User {
   firebaseId String? @unique @map("firebase_id")
   photoURL String? @map("photo_url")
   isCustomPhoto Boolean @default(false) @map("is_custom_photo")
+  instagramProfile String? @map("instagram_profile")
+  isApproved Boolean @default(false) @map("is_approved")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

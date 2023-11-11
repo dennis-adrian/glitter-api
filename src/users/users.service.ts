@@ -18,6 +18,7 @@ export class UsersService {
 
       return user;
     } catch (error) {
+      console.log('this is the error', error)
       throw new BadRequestException(error);
     }
   }
