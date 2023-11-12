@@ -4,11 +4,11 @@ import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class FestivalsService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private prisma: DatabaseService) {}
 
   async create(data: Prisma.FestivalCreateInput) {
     try {
-      return await this.databaseService.festival.create({
+      return await this.prisma.festival.create({
         data,
       });
     } catch (error) {

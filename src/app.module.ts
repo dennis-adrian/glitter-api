@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { FestivalsModule } from './festivals/festivals.module';
+import { StandsModule } from './stands/stands.module';
 import config from 'src/config';
 
 @Module({
@@ -17,6 +18,7 @@ import config from 'src/config';
     UsersModule,
     DatabaseModule,
     FestivalsModule,
+    StandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
