@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
 import { Festival } from '@prisma/client';
 import { CreateFestivalDto } from './dto/create-festival.dto';
@@ -14,5 +14,10 @@ export class FestivalsController {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  @Get()
+  async findAll(): Promise<Festival[]> {
+    return this.festivalsService.findAll();
   }
 }

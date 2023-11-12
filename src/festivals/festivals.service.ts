@@ -15,4 +15,8 @@ export class FestivalsService {
       throw new BadRequestException(error);
     }
   }
+
+  async findAll() {
+    return await this.prisma.festival.findMany();
+  }
 }
