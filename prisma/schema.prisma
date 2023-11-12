@@ -23,8 +23,68 @@ model User {
   isCustomPhoto Boolean @default(false) @map("is_custom_photo")
   instagramProfile String? @map("instagram_profile")
   isApproved Boolean @default(false) @map("is_approved")
+  reservationsRequested Reservation[] @relation("RequestedByRelation")
+  reservations Reservation[] @relation("ArtistRelation")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
+
+model Festival {
+  id Int @id @default(autoincrement())
+  name String?
+  description String?
+  startDate DateTime @map("start_date")
+  endDate DateTime @map("end_date")
+  location String?
+  locationURL String? @map("location_url")
+  logoURL String? @map("logo_url")
+  status FestivalStatus @default(DRAFT)
+  stands Stand[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("festivals")
+}
+
+model Stand {
+  id Int @id @default(autoincrement())
+  label String?
+  standNumber Int @map("stand_number")
+  description String?
+  price Float?
+  festival Festival @relation(fields: [festivalId], references: [id])
+  festivalId Int @map("festival_id")
+  reservations Reservation[]
+
+  @@map("stands")
+}
+
+model Reservation {
+  id Int @id @default(autoincrement())
+  status ReservationStatus @default(PENDING)
+  stand Stand @relation(fields: [standId], references: [id])
+  standId Int @map("stand_id")
+  artist User @relation("ArtistRelation", fields: [artistId], references: [id])
+  artistId Int @map("artist_id")
+  requestedBy User @relation("RequestedByRelation", fields: [requestedById], references: [id])
+  requestedById Int @map("requested_by_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("reservations")
+}
+
+enum FestivalStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ReservationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
