@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProgramsModule } from './programs/programs.module';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { FestivalsModule } from './festivals/festivals.module';
 import config from 'src/config';
 
 @Module({
@@ -14,9 +14,9 @@ import config from 'src/config';
       isGlobal: true,
       load: [config],
     }),
-    ProgramsModule,
     UsersModule,
     DatabaseModule,
+    FestivalsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
