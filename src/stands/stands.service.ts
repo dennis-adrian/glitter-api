@@ -17,8 +17,8 @@ export class StandsService {
     }
   }
 
-  findAll() {
-    return `This action returns all stands`;
+  async findAll() {
+    return await this.prisma.stand.findMany();
   }
 
   findOne(id: number) {

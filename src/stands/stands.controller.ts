@@ -7,12 +7,12 @@ export class StandsController {
   constructor(private readonly standsService: StandsService) {}
 
   @Post()
-  create(@Body() createStandDto: CreateStandDto) {
+  async create(@Body() createStandDto: CreateStandDto) {
     return this.standsService.create(createStandDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.standsService.findAll();
   }
 
