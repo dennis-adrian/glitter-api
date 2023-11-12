@@ -57,6 +57,8 @@ model Stand {
   festival Festival @relation(fields: [festivalId], references: [id])
   festivalId Int @map("festival_id")
   reservations Reservation[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("stands")
 }
