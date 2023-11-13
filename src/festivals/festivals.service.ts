@@ -17,6 +17,21 @@ export class FestivalsService {
   }
 
   async findAll() {
-    return await this.prisma.festival.findMany();
+    return await this.prisma.festival.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
+  }
+
+  async findAllActive() {
+    return await this.prisma.festival.findMany({
+      where: {
+        status: 'ACTIVE',
+      },
+      orderBy: {
+        startDate: 'desc',
+      },
+    });
   }
 }

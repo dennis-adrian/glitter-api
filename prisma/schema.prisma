@@ -84,6 +84,7 @@ enum FestivalStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+  ACTIVE
 }
 
 enum ReservationStatus {
@@ -95,7 +96,7 @@ enum ReservationStatus {
 enum StandStatus {
   AVAILABLE
   RESERVED
-  SOLD
+  CONFIRMED
 }
 
 enum StandOrientation {

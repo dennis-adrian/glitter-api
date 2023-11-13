@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
 import { Festival } from '@prisma/client';
 import { CreateFestivalDto } from './dto/create-festival.dto';
@@ -17,7 +17,10 @@ export class FestivalsController {
   }
 
   @Get()
-  async findAll(): Promise<Festival[]> {
+  async findAll(@Query('active') active?: string): Promise<Festival[]> {
+    const isActive: boolean = active === 'true';
+    if (isActive) return this.festivalsService.findAllActive();
+
     return this.festivalsService.findAll();
   }
 }
