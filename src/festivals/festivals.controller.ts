@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { FestivalsService } from './festivals.service';
-import { Festival } from '@prisma/client';
+import { Festival, Prisma } from '@prisma/client';
 import { CreateFestivalDto } from './dto/create-festival.dto';
 
 @Controller('festivals')
@@ -22,5 +22,21 @@ export class FestivalsController {
     if (isActive) return this.festivalsService.findAllActive();
 
     return this.festivalsService.findAll();
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body()
+    festivalData: Prisma.FestivalUpdateInput & {
+      availableArtists: Prisma.UserUpdateManyWithoutFestivalsNestedInput['connect'];
+    },
+  ): Promise<Festival> {
+    return this.festivalsService.update({
+      where: {
+        id: +id,
+      },
+      data: festivalData,
+    });
   }
 }

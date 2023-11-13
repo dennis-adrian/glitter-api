@@ -26,12 +26,36 @@ export class FestivalsService {
 
   async findAllActive() {
     return await this.prisma.festival.findMany({
+      include: {
+        availableArtists: true,
+      },
       where: {
         status: 'ACTIVE',
       },
       orderBy: {
         startDate: 'desc',
       },
+    });
+  }
+
+  async update(params: {
+    where: Prisma.FestivalWhereUniqueInput;
+    data: Prisma.FestivalUpdateInput & {
+      availableArtists: Prisma.UserUpdateManyWithoutFestivalsNestedInput['connect'];
+    };
+  }) {
+    const { where, data } = params;
+    return await this.prisma.festival.update({
+      include: {
+        availableArtists: true,
+      },
+      data: {
+        ...data,
+        availableArtists: {
+          connect: data.availableArtists,
+        },
+      },
+      where,
     });
   }
 }

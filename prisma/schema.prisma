@@ -25,6 +25,7 @@ model User {
   reservationsRequested Reservation[] @relation("RequestedByRelation")
   reservations Reservation[] @relation("ArtistRelation")
   status UserStatus @default(WAITING_APPROVAL)
+  festivals Festival[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -42,6 +43,7 @@ model Festival {
   logoURL String? @map("logo_url")
   status FestivalStatus @default(DRAFT)
   stands Stand[]
+  availableArtists User[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
