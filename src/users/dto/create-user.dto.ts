@@ -3,7 +3,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   MinLength,
 } from 'class-validator';
 
@@ -27,7 +26,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
   firebaseId: string;
 }

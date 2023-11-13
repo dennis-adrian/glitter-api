@@ -26,6 +26,15 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
+  async findAllArtists(): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: {
+        isArtist: true,
+        status: 'ACTIVE',
+      },
+    });
+  }
+
   async findOne(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {

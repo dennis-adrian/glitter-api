@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, Prisma } from '@prisma/client';
@@ -21,7 +22,13 @@ export class UsersController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query('artists') artists: string): Promise<User[] | null> {
+    const isArtistsOnly = artists === 'true';
+
+    if (isArtistsOnly) {
+      return this.usersService.findAllArtists();
+    }
+
     return this.usersService.findAll();
   }
 
