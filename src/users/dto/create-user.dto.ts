@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   MinLength,
 } from 'class-validator';
 
@@ -29,4 +30,16 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   firebaseId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  instagramProfile: string;
+
+  @IsUrl()
+  @IsOptional()
+  photoURL: string;
 }

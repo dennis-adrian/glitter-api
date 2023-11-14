@@ -23,11 +23,18 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      include: {
+        festivals: true,
+      },
+    });
   }
 
   async findAllArtists(): Promise<User[]> {
     return this.prisma.user.findMany({
+      include: {
+        festivals: true,
+      },
       where: {
         isArtist: true,
         status: 'ACTIVE',
@@ -59,11 +66,21 @@ export class UsersService {
 
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
+    data: Prisma.UserUpdateInput & {
+      festivals: Prisma.FestivalUpdateManyWithoutAvailableArtistsNestedInput['connect'];
+    };
   }): Promise<User> {
     const { where, data } = params;
     return this.prisma.user.update({
-      data,
+      include: {
+        festivals: true,
+      },
+      data: {
+        ...data,
+        festivals: {
+          connect: data.festivals,
+        },
+      },
       where,
     });
   }
