@@ -42,6 +42,14 @@ export class UsersService {
       where: {
         firebaseId: userWhereUniqueInput.firebaseId,
       },
+      include: {
+        festivals: true,
+        reservations: {
+          include: {
+            stand: true,
+          },
+        },
+      },
     });
 
     if (!user) throw new NotFoundException('User not found');

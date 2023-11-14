@@ -93,6 +93,7 @@ enum ReservationStatus {
   PENDING
   APPROVED
   REJECTED
+  CANCELED
 }
 
 enum StandStatus {

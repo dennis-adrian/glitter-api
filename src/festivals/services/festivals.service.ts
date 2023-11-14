@@ -28,7 +28,16 @@ export class FestivalsService {
     return await this.prisma.festival.findMany({
       include: {
         availableArtists: true,
-        stands: true,
+        stands: {
+          include: {
+            reservations: {
+              include: {
+                artist: true,
+                requestedBy: true,
+              },
+            },
+          },
+        },
       },
       where: {
         status: 'ACTIVE',
