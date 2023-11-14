@@ -7,10 +7,13 @@ import {
   Delete,
   Put,
   Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from './dto/entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -33,8 +36,11 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') firebaseId: string): Promise<User | null> {
-    return this.usersService.findOne({ firebaseId });
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findOne(@Param('id') firebaseId: string): Promise<UserEntity | null> {
+    const user: User = await this.usersService.findOne({ firebaseId });
+
+    return new UserEntity(user as User);
   }
 
   @Put(':id')

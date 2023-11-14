@@ -44,6 +44,7 @@ model Festival {
   status FestivalStatus @default(DRAFT)
   stands Stand[]
   availableArtists User[]
+  reservations Reservation[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -76,6 +77,8 @@ model Reservation {
   artistId Int @map("artist_id")
   requestedBy User @relation("RequestedByRelation", fields: [requestedById], references: [id])
   requestedById Int @map("requested_by_id")
+  festivalId Int @map("festival_id")
+  festival Festival @relation(fields: [festivalId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
