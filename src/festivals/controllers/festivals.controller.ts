@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { FestivalsService } from './festivals.service';
+import { FestivalsService } from '../services/festivals.service';
 import { Festival, Prisma } from '@prisma/client';
-import { CreateFestivalDto } from './dto/create-festival.dto';
+import { CreateFestivalDto } from '../dtos/create-festival.dto';
 
 @Controller('festivals')
 export class FestivalsController {

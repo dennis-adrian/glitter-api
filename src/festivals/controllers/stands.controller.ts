@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { StandsService } from './stands.service';
-import { CreateStandDto } from './dto/create-stand.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
+import { StandsService } from '../services/stands.service';
+import { CreateStandDto } from '../dtos/create-stand.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('stands')
 export class StandsController {
@@ -17,7 +26,7 @@ export class StandsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.standsService.findOne(+id);
   }
 
@@ -25,6 +34,21 @@ export class StandsController {
   // update(@Param('id') id: string, @Body() updateStandDto: UpdateStandDto) {
   //   return this.standsService.update(+id, updateStandDto);
   // }
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body()
+    standData: Prisma.StandUpdateInput & {
+      reservations: Prisma.ReservationCreateInput[];
+    },
+  ) {
+    return this.standsService.update({
+      where: {
+        id: +id,
+      },
+      data: standData,
+    });
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
