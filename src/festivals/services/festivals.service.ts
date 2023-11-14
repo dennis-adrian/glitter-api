@@ -28,6 +28,7 @@ export class FestivalsService {
     return await this.prisma.festival.findMany({
       include: {
         availableArtists: true,
+        reservations: true,
         stands: {
           include: {
             reservations: {

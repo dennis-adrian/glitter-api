@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FestivalsService } from '../services/festivals.service';
 import { Festival, Prisma } from '@prisma/client';
 import { CreateFestivalDto } from '../dtos/create-festival.dto';
+import { FestivalEntity } from '../entities/festival.entity';
 
 @Controller('festivals')
 export class FestivalsController {
@@ -17,9 +28,17 @@ export class FestivalsController {
   }
 
   @Get()
-  async findAll(@Query('active') active?: string): Promise<Festival[]> {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findAll(
+    @Query('active') active?: string,
+  ): Promise<Festival[] | FestivalEntity[]> {
     const isActive: boolean = active === 'true';
-    if (isActive) return this.festivalsService.findAllActive();
+    if (isActive) {
+      const festivals = await this.festivalsService.findAllActive();
+      return festivals?.map(
+        (festival) => new FestivalEntity(festival as Festival),
+      );
+    }
 
     return this.festivalsService.findAll();
   }
