@@ -33,8 +33,10 @@ export class FestivalsService {
           include: {
             reservations: {
               include: {
-                artist: true,
-                requestedBy: true,
+                artists: true,
+              },
+              orderBy: {
+                id: 'asc',
               },
             },
           },

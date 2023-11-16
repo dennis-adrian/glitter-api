@@ -55,8 +55,7 @@ export class StandsService {
       include: {
         reservations: {
           include: {
-            artist: true,
-            requestedBy: true,
+            artists: true,
           },
         },
       },
