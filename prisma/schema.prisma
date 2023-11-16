@@ -23,9 +23,10 @@ model User {
   isCustomPhoto Boolean @default(false) @map("is_custom_photo")
   instagramProfile String? @map("instagram_profile")
   reservationsRequested Reservation[] @relation("RequestedByRelation")
-  reservations Reservation[] @relation("ArtistRelation")
+  reservationsArtists Reservation[] @relation("ArtistRelation")
   status UserStatus @default(WAITING_APPROVAL)
   festivals Festival[]
+  reservations Reservation[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -79,6 +80,7 @@ model Reservation {
   requestedById Int @map("requested_by_id")
   festivalId Int @map("festival_id")
   festival Festival @relation(fields: [festivalId], references: [id])
+  artists User[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
