@@ -12,6 +12,9 @@ export class ReservationsService {
         stand: true,
         artists: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
@@ -48,6 +51,73 @@ export class ReservationsService {
         stand,
       };
     }
+  }
+
+  async update(
+    where: Prisma.ReservationWhereUniqueInput,
+    data: Prisma.ReservationUpdateInput,
+  ) {
+    const reservation = await this.prisma.reservation.update({
+      where,
+      data,
+    });
+
+    if (reservation.id) {
+      switch (reservation.status) {
+        case 'APPROVED':
+          await this.prisma.stand.update({
+            where: {
+              id: reservation.standId,
+            },
+            data: {
+              status: 'CONFIRMED',
+            },
+          });
+          break;
+        case 'CANCELLED':
+          await this.prisma.stand.update({
+            where: {
+              id: reservation.standId,
+            },
+            data: {
+              status: 'AVAILABLE',
+            },
+          });
+          break;
+        case 'PENDING':
+          await this.prisma.stand.update({
+            where: {
+              id: reservation.standId,
+            },
+            data: {
+              status: 'RESERVED',
+            },
+          });
+          break;
+        case 'REJECTED':
+          await this.prisma.stand.update({
+            where: {
+              id: reservation.standId,
+            },
+            data: {
+              status: 'AVAILABLE',
+            },
+          });
+          break;
+        default:
+          break;
+      }
+    }
+
+    return await this.prisma.reservation.findUnique({
+      where: {
+        id: reservation.id,
+      },
+      include: {
+        artists: true,
+        stand: true,
+      },
+    });
   }
 
   async remove(

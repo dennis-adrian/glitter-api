@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ReservationsService } from '../services/reservations.service';
 import { Prisma, Reservation } from '@prisma/client';
 
@@ -19,6 +27,17 @@ export class ReservationsController {
     },
   ): Promise<Reservation> {
     return this.reservationsService.create(data);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() data: Prisma.ReservationUpdateInput,
+  ): Promise<Reservation> {
+    return this.reservationsService.update(
+      { id: Number(id) },
+      { status: data.status },
+    );
   }
 
   @Delete(':id')
