@@ -18,6 +18,18 @@ export class ReservationsService {
     });
   }
 
+  async findAllByFestivalId(id: number) {
+    return await this.prisma.reservation.findMany({
+      where: {
+        festivalId: id,
+      },
+      include: {
+        stand: true,
+        artists: true,
+      },
+    });
+  }
+
   async create(
     data: Prisma.ReservationCreateInput & {
       artists: Prisma.UserWhereUniqueInput[];

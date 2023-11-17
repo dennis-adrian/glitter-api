@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ReservationsService } from '../services/reservations.service';
 import { Prisma, Reservation } from '@prisma/client';
@@ -15,7 +16,11 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   @Get()
-  async findAll() {
+  async findAll(@Query('festival') festival?: string): Promise<Reservation[]> {
+    if (festival) {
+      return this.reservationsService.findAllByFestivalId(+festival);
+    }
+
     return this.reservationsService.findAll();
   }
 
