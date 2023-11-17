@@ -67,7 +67,7 @@ export class UsersService {
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput & {
-      festivals: Prisma.FestivalUpdateManyWithoutAvailableArtistsNestedInput['connect'];
+      festivals: Prisma.FestivalUpdateManyWithoutArtistsNestedInput['connect'];
     };
   }): Promise<User> {
     const { where, data } = params;

@@ -44,7 +44,7 @@ model Festival {
   logoURL String? @map("logo_url")
   status FestivalStatus @default(DRAFT)
   stands Stand[]
-  availableArtists User[]
+  artists User[]
   reservations Reservation[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

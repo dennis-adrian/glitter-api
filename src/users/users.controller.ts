@@ -48,7 +48,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body()
     data: Prisma.UserUpdateInput & {
-      festivals: Prisma.FestivalUpdateManyWithoutAvailableArtistsNestedInput['connect'];
+      festivals: Prisma.FestivalUpdateManyWithoutArtistsNestedInput['connect'];
     },
   ): Promise<User> {
     return this.usersService.update({

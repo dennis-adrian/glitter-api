@@ -27,8 +27,12 @@ export class FestivalsService {
   async findAllActive() {
     return await this.prisma.festival.findMany({
       include: {
-        availableArtists: true,
-        reservations: true,
+        artists: true,
+        reservations: {
+          include: {
+            artists: true,
+          },
+        },
         stands: {
           include: {
             reservations: {
@@ -54,19 +58,19 @@ export class FestivalsService {
   async update(params: {
     where: Prisma.FestivalWhereUniqueInput;
     data: Prisma.FestivalUpdateInput & {
-      availableArtists: Prisma.UserUpdateManyWithoutFestivalsNestedInput['connect'];
+      artists: Prisma.UserUpdateManyWithoutFestivalsNestedInput['connect'];
     };
   }) {
     const { where, data } = params;
     return await this.prisma.festival.update({
       include: {
-        availableArtists: true,
+        artists: true,
         stands: true,
       },
       data: {
         ...data,
-        availableArtists: {
-          connect: data.availableArtists,
+        artists: {
+          connect: data.artists,
         },
       },
       where,
