@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Reservation } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -9,6 +9,7 @@ export class ReservationsService {
   async findAll() {
     return await this.prisma.reservation.findMany({
       include: {
+        stand: true,
         artists: true,
       },
     });
@@ -45,6 +46,30 @@ export class ReservationsService {
       return {
         ...reservation,
         stand,
+      };
+    }
+  }
+
+  async remove(
+    where: Prisma.ReservationWhereUniqueInput,
+  ): Promise<Reservation> {
+    const reservation = await this.prisma.reservation.delete({
+      where,
+    });
+
+    if (reservation.id) {
+      const stand = await this.prisma.stand.update({
+        where: {
+          id: reservation.standId,
+        },
+        data: {
+          status: 'AVAILABLE',
+        },
+      });
+
+      return {
+        ...reservation,
+        standId: stand.id,
       };
     }
   }
