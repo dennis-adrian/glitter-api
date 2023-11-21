@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma, Reservation } from '@prisma/client';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { Prisma, StandStatus } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -65,76 +65,40 @@ export class ReservationsService {
     }
   }
 
-  async update(
-    where: Prisma.ReservationWhereUniqueInput,
-    data: Prisma.ReservationUpdateInput,
-  ) {
-    const reservation = await this.prisma.reservation.update({
-      where,
-      data,
-    });
+  async update(params: {
+    where: Prisma.ReservationWhereUniqueInput;
+    data: Prisma.ReservationUpdateInput & {
+      artists: {
+        connect: Prisma.UserWhereUniqueInput[];
+        disconnect: Prisma.UserWhereUniqueInput[];
+      };
+      stand: Prisma.StandUpdateWithoutReservationsInput;
+    };
+  }) {
+    const { where, data } = params;
 
-    if (reservation.id) {
-      switch (reservation.status) {
-        case 'APPROVED':
-          await this.prisma.stand.update({
-            where: {
-              id: reservation.standId,
-            },
-            data: {
-              status: 'CONFIRMED',
-            },
-          });
-          break;
-        case 'CANCELLED':
-          await this.prisma.stand.update({
-            where: {
-              id: reservation.standId,
-            },
-            data: {
-              status: 'AVAILABLE',
-            },
-          });
-          break;
-        case 'PENDING':
-          await this.prisma.stand.update({
-            where: {
-              id: reservation.standId,
-            },
-            data: {
-              status: 'RESERVED',
-            },
-          });
-          break;
-        case 'REJECTED':
-          await this.prisma.stand.update({
-            where: {
-              id: reservation.standId,
-            },
-            data: {
-              status: 'AVAILABLE',
-            },
-          });
-          break;
-        default:
-          break;
+    try {
+      if (data.artists) {
+        this.updateArtists(where, data.artists);
       }
-    }
 
-    return await this.prisma.reservation.findUnique({
-      where: {
-        id: reservation.id,
-      },
-      include: {
-        artists: true,
-        stand: true,
-      },
-    });
+      return await this.prisma.reservation.update({
+        where,
+        data: {
+          ...data,
+          ...this.createStandStatusUpdateOperation(data.status),
+        },
+        include: {
+          artists: true,
+          stand: true,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
-  async remove(
-    where: Prisma.ReservationWhereUniqueInput,
-  ): Promise<Reservation> {
+  async remove(where: Prisma.ReservationWhereUniqueInput) {
     const reservation = await this.prisma.reservation.delete({
       where,
     });
@@ -154,5 +118,91 @@ export class ReservationsService {
         standId: stand.id,
       };
     }
+  }
+
+  private async updateArtists(
+    where: Prisma.ReservationWhereUniqueInput,
+    artists: {
+      connect: Prisma.UserWhereUniqueInput[];
+      disconnect: Prisma.UserWhereUniqueInput[];
+    },
+  ) {
+    const operations = [];
+    if (artists.disconnect?.length > 0) {
+      operations.push(
+        this.prisma.reservation.update(
+          this.createDisconnectArtistsOperation(where, artists.disconnect),
+        ),
+      );
+    }
+
+    if (artists.connect?.length > 0) {
+      operations.push(
+        this.prisma.reservation.update(
+          this.createConnectArtistsOperation(where, artists.connect),
+        ),
+      );
+    }
+
+    await this.prisma.$transaction(operations);
+  }
+
+  private createDisconnectArtistsOperation(
+    where: Prisma.ReservationWhereUniqueInput,
+    artists: Prisma.UserWhereUniqueInput[],
+  ) {
+    return {
+      where,
+      data: {
+        artists: {
+          disconnect: artists,
+        },
+      },
+    };
+  }
+
+  private createConnectArtistsOperation(
+    where: Prisma.ReservationWhereUniqueInput,
+    artists: Prisma.UserWhereUniqueInput[],
+  ) {
+    return {
+      where,
+      data: {
+        artists: {
+          connect: artists,
+        },
+      },
+    };
+  }
+
+  private createStandStatusUpdateOperation(
+    reservationStatus: Prisma.ReservationUpdateInput['status'],
+  ) {
+    let status: StandStatus;
+    switch (reservationStatus) {
+      case 'APPROVED':
+        status = 'CONFIRMED';
+        break;
+      case 'CANCELLED':
+        status = 'AVAILABLE';
+        break;
+      case 'PENDING':
+        status = 'RESERVED';
+        break;
+      case 'REJECTED':
+        status = 'AVAILABLE';
+        break;
+      default:
+        status = 'AVAILABLE';
+        break;
+    }
+
+    return {
+      stand: {
+        update: {
+          status,
+        },
+      },
+    };
   }
 }

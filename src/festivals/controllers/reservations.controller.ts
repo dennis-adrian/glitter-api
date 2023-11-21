@@ -37,12 +37,21 @@ export class ReservationsController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() data: Prisma.ReservationUpdateInput,
+    @Body()
+    data: Prisma.ReservationUpdateInput & {
+      artists: {
+        connect: Prisma.UserWhereUniqueInput[];
+        disconnect: Prisma.UserWhereUniqueInput[];
+      };
+      stand: Prisma.StandUncheckedUpdateWithoutReservationsInput;
+    },
   ): Promise<Reservation> {
-    return this.reservationsService.update(
-      { id: Number(id) },
-      { status: data.status },
-    );
+    return this.reservationsService.update({
+      where: {
+        id: +id,
+      },
+      data,
+    });
   }
 
   @Delete(':id')
