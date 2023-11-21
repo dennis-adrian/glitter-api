@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ReservationsService } from '../services/reservations.service';
 import { Prisma, Reservation } from '@prisma/client';
+import { ReservationUpdate } from '../dtos/reservation-update.dto';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -38,13 +39,7 @@ export class ReservationsController {
   async update(
     @Param('id') id: string,
     @Body()
-    data: Prisma.ReservationUpdateInput & {
-      artists: {
-        connect: Prisma.UserWhereUniqueInput[];
-        disconnect: Prisma.UserWhereUniqueInput[];
-      };
-      stand: Prisma.StandUncheckedUpdateWithoutReservationsInput;
-    },
+    data: ReservationUpdate,
   ): Promise<Reservation> {
     return this.reservationsService.update({
       where: {
