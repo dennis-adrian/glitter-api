@@ -24,33 +24,15 @@ export class FestivalsService {
     });
   }
 
-  async findAllActive() {
-    return await this.prisma.festival.findMany({
-      include: {
-        artists: true,
-        reservations: {
-          include: {
-            artists: true,
-          },
-        },
-        stands: {
-          include: {
-            reservations: {
-              include: {
-                artists: true,
-              },
-              orderBy: {
-                id: 'asc',
-              },
-            },
-          },
-        },
-      },
+  async findActive() {
+    return await this.prisma.festival.findFirstOrThrow({
       where: {
         status: 'ACTIVE',
       },
-      orderBy: {
-        startDate: 'desc',
+      include: {
+        artists: true,
+        stands: true,
+        reservations: true,
       },
     });
   }

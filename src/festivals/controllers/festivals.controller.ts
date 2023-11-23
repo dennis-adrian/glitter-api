@@ -12,7 +12,6 @@ import {
 import { FestivalsService } from '../services/festivals.service';
 import { Festival, Prisma } from '@prisma/client';
 import { CreateFestivalDto } from '../dtos/create-festival.dto';
-import { FestivalEntity } from '../entities/festival.entity';
 
 @Controller('festivals')
 export class FestivalsController {
@@ -31,13 +30,11 @@ export class FestivalsController {
   @UseInterceptors(ClassSerializerInterceptor)
   async findAll(
     @Query('active') active?: string,
-  ): Promise<Festival[] | FestivalEntity[]> {
+  ): Promise<Festival[] | Festival> {
     const isActive: boolean = active === 'true';
     if (isActive) {
-      const festivals = await this.festivalsService.findAllActive();
-      return festivals?.map(
-        (festival) => new FestivalEntity(festival as Festival),
-      );
+      const festival = await this.festivalsService.findActive();
+      return festival;
     }
 
     return this.festivalsService.findAll();
