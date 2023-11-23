@@ -12,6 +12,7 @@ export class ReservationsService {
       include: {
         stand: true,
         artists: true,
+        festival: true,
       },
       orderBy: {
         createdAt: 'desc',

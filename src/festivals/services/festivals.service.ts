@@ -31,8 +31,20 @@ export class FestivalsService {
       },
       include: {
         artists: true,
-        stands: true,
-        reservations: true,
+        stands: {
+          include: {
+            reservations: {
+              include: {
+                artists: true,
+              },
+            },
+          },
+        },
+        reservations: {
+          include: {
+            artists: true,
+          },
+        },
       },
     });
   }
