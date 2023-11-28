@@ -15,7 +15,7 @@ export class ReservationsService {
         festival: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        standId: 'asc',
       },
     });
   }
