@@ -27,5 +27,5 @@ COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 
-# start app in production mode
-CMD ["npm", "run", "start:prod"]
+# start app in production mode with prisma migration
+CMD ["npx", "prisma", "migrate", "deploy", "&&", "npm", "run", "start:prod"]
